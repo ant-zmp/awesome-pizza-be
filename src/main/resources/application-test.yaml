@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: awesome-pizza-be
+  data:
+    mongodb:
+      database: test
+      username: admin
+      password: f865b53623b121fd34ee5426c792e5c33af8c227
+      host: localhost
+      port: 27017
+      authentication-database: admin
+
+server:
+  port: 8080

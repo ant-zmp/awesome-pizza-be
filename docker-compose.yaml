@@ -1,0 +1,12 @@
+version: "3"
+services:
+  mongo:
+    image: mongo
+    hostname: localhost
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=admin
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=f865b53623b121fd34ee5426c792e5c33af8c227
