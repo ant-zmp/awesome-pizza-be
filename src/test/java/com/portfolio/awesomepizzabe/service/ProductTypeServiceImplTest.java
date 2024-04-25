@@ -2,15 +2,20 @@ package com.portfolio.awesomepizzabe.service;
 
 import com.portfolio.awesomepizzabe.AwesomePizzaBeApplication;
 import com.portfolio.awesomepizzabe.config.exceptions.AlreadyExistsException;
-import com.portfolio.awesomepizzabe.config.exceptions.NotFoundException;
+import com.portfolio.awesomepizzabe.config.exceptions.AssociatedEntityException;
+import com.portfolio.awesomepizzabe.config.exceptions.status.NotFoundException;
+import com.portfolio.awesomepizzabe.dto.ProductTypeDetailDTO;
+import com.portfolio.awesomepizzabe.model.Product;
 import com.portfolio.awesomepizzabe.model.ProductType;
+import com.portfolio.awesomepizzabe.repository.ProductRepository;
 import com.portfolio.awesomepizzabe.repository.ProductTypeRepository;
 import com.portfolio.awesomepizzabe.service.impl.ProductTypeServiceImpl;
-
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -18,11 +23,11 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
-@SpringBootTest(classes = {AwesomePizzaBeApplication.class})
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@SpringBootTest(classes = {AwesomePizzaBeApplication.class})
 public class ProductTypeServiceImplTest {
 
     @Autowired
@@ -31,6 +36,10 @@ public class ProductTypeServiceImplTest {
     @Autowired
     private ProductTypeServiceImpl productTypeService;
 
+    @Autowired
+    private ProductRepository productRepository;
+
+    Product testProduct;
     ProductType testSubjectFirst;
     ProductType testSubjectSecond;
 
@@ -48,6 +57,7 @@ public class ProductTypeServiceImplTest {
     @AfterAll
     public void tearDown() {
         productTypeRepository.deleteAll();
+        productRepository.deleteAll();
     }
 
     @Test
@@ -80,13 +90,18 @@ public class ProductTypeServiceImplTest {
     @Test
     @Order(3)
     public void updateProductType() {
-        assertThrows(NotFoundException.class, () -> productTypeService.findProductType("random id"));
+        assertThrows(NotFoundException.class, () -> productTypeService.updateProductType("random id",testSubjectSecond));
         assertThrows(AlreadyExistsException.class, () -> productTypeService.updateProductType(testSubjectFirst.getId(), testSubjectSecond));
 
-        testSubjectFirst.setName("Edited Subject Name");
         testSubjectFirst.setDescription("Edited Subject Description");
 
         ProductType edited = assertDoesNotThrow(() -> productTypeService.updateProductType(testSubjectFirst.getId(), testSubjectFirst));
+        assertEquals(edited.getId(), testSubjectFirst.getId());
+        assertEquals(edited.getName(), testSubjectFirst.getName());
+        assertEquals(edited.getDescription(), testSubjectFirst.getDescription());
+
+        testSubjectFirst.setName("Edited Subject Name");
+        edited = assertDoesNotThrow(() -> productTypeService.updateProductType(testSubjectFirst.getId(), testSubjectFirst));
         assertEquals(edited.getId(), testSubjectFirst.getId());
         assertEquals(edited.getName(), testSubjectFirst.getName());
         assertEquals(edited.getDescription(), testSubjectFirst.getDescription());
@@ -94,21 +109,82 @@ public class ProductTypeServiceImplTest {
 
     @Test
     @Order(4)
-    public void findAllProductType() {
-        List<ProductType> productTypes = assertDoesNotThrow(() -> productTypeRepository.findAll());
-        assertEquals(productTypes.size(), 2);
+    public void findAllProductTypes() {
+        Page<ProductType> productTypes = assertDoesNotThrow(() -> productTypeService.findAllProductTypes(Pageable.unpaged()));
+        assertEquals(productTypes.getTotalElements(), 2);
     }
 
     @Test
     @Order(5)
-    public void deleteProductType() {
+    public void deleteProductTypeThrows() {
         assertThrows(NotFoundException.class, () -> productTypeService.deleteProductType("random id"));
+
+        testProduct = new Product();
+        testProduct.setProductType(testSubjectFirst);
+        testProduct.setImageId("not-a-real-id");
+        testProduct = productRepository.save(testProduct);
+
+        assertThrows(AssociatedEntityException.class, () -> productTypeService.deleteProductType(testSubjectFirst.getId()));
+    }
+
+    @Test
+    @Order(6)
+    public void findAllProductTypeDetails() {
+        List<ProductTypeDetailDTO> productTypes = assertDoesNotThrow(() -> productTypeService.findAllProductTypeDetails());
+        assertEquals(productTypes.size(), 2);
+
+        ProductTypeDetailDTO dto = productTypes.stream()
+                .filter(type -> type.getId().equals(testSubjectFirst.getId()))
+                .findFirst().orElseThrow();
+
+        assertEquals(dto.getId(), testSubjectFirst.getId());
+        assertEquals(dto.getName(), testSubjectFirst.getName());
+        assertEquals(dto.getDescription(), testSubjectFirst.getDescription());
+        assertEquals(dto.getCount(), 1);
+        assertEquals(dto.getImageId(), testProduct.getImageId());
+
+        testProduct.setImageId(null);
+        testProduct = productRepository.save(testProduct);
+
+        productTypes = assertDoesNotThrow(() -> productTypeService.findAllProductTypeDetails());
+        assertEquals(productTypes.size(), 2);
+
+        dto = productTypes.stream()
+                .filter(type -> type.getId().equals(testSubjectFirst.getId()))
+                .findFirst().orElseThrow();
+
+        assertEquals(dto.getId(), testSubjectFirst.getId());
+        assertEquals(dto.getName(), testSubjectFirst.getName());
+        assertEquals(dto.getDescription(), testSubjectFirst.getDescription());
+        assertEquals(dto.getCount(), 1);
+        assertNull(dto.getImageId());
+
+        productRepository.delete(testProduct);
+
+        productTypes = assertDoesNotThrow(() -> productTypeService.findAllProductTypeDetails());
+        assertEquals(productTypes.size(), 2);
+
+        dto = productTypes.stream()
+                .filter(type -> type.getId().equals(testSubjectFirst.getId()))
+                .findFirst().orElseThrow();
+
+        assertEquals(dto.getId(), testSubjectFirst.getId());
+        assertEquals(dto.getName(), testSubjectFirst.getName());
+        assertEquals(dto.getDescription(), testSubjectFirst.getDescription());
+        assertEquals(dto.getCount(), 0);
+        assertNull(dto.getImageId());
+
+    }
+
+    @Test
+    @Order(7)
+    public void deleteProductTypeSuccess() {
         assertDoesNotThrow(() -> productTypeService.deleteProductType(testSubjectFirst.getId()));
         assertDoesNotThrow(() -> productTypeService.deleteProductType(testSubjectSecond.getId()));
     }
 
     @Test
-    @Order(6)
+    @Order(8)
     public void findAllProductTypesEmpty() {
         List<ProductType> productTypes = assertDoesNotThrow(() -> productTypeRepository.findAll());
         assertEquals(productTypes.size(), 0);

@@ -1,5 +1,9 @@
-package com.portfolio.awesomepizzabe.config;
+package com.portfolio.awesomepizzabe.config.exceptions;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+
+@Slf4j
 public class ErrorDTO {
 
     private String message;
@@ -8,6 +12,11 @@ public class ErrorDTO {
     public ErrorDTO(Exception exception) {
         this.message = exception.getMessage();
         this.exception = exception.getClass().getSimpleName();
+        if (exception instanceof BaseException || exception instanceof MethodArgumentNotValidException) {
+            log.warn(this.message);
+        } else {
+            log.error(exception.getStackTrace().toString());
+        }
     }
 
     public String getMessage() {

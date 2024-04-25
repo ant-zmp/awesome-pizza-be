@@ -10,12 +10,14 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductTypeDTO {
+public class ProductTypeDetailDTO {
 
     @NotBlank
     private String id;
     @NotBlank(message = "Product Type name must not be empty.")
     private String name;
     private String description;
+    private String imageId;
+    private int count;
 
 }

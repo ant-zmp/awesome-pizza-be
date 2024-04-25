@@ -1,10 +1,13 @@
 package com.portfolio.awesomepizzabe.config;
 
 import com.portfolio.awesomepizzabe.config.exceptions.BaseException;
+import com.portfolio.awesomepizzabe.config.exceptions.ErrorDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import java.io.IOException;
 
 @ControllerAdvice
 public class ExceptionInterceptor {
@@ -23,6 +26,12 @@ public class ExceptionInterceptor {
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
     public ResponseEntity<ErrorDTO> handleValidationException(MethodArgumentNotValidException e) {
+        return ResponseEntity.status(400)
+                .body(new ErrorDTO(e));
+    }
+
+    @ExceptionHandler({IOException.class})
+    public ResponseEntity<ErrorDTO> handleIOException(IOException e) {
         return ResponseEntity.status(400)
                 .body(new ErrorDTO(e));
     }

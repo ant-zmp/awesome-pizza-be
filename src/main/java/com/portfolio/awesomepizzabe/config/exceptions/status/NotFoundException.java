@@ -1,5 +1,6 @@
-package com.portfolio.awesomepizzabe.config.exceptions;
+package com.portfolio.awesomepizzabe.config.exceptions.status;
 
+import com.portfolio.awesomepizzabe.config.exceptions.BaseException;
 import org.springframework.http.HttpStatus;
 
 public class NotFoundException extends BaseException {
