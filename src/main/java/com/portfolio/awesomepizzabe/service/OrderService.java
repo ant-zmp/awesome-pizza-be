@@ -22,4 +22,5 @@ public interface OrderService {
 
     Page<Order> findAllOrders(Pageable pageable);
 
+    void checkWorkHours();
 }

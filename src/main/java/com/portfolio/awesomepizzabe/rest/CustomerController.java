@@ -50,6 +50,7 @@ public class CustomerController {
      */
     @PostMapping
     public ResponseEntity<OrderDTO> placeOrder(@RequestBody @Valid OrderDTO orderDTO) {
+        orderService.checkWorkHours();
         return ResponseEntity.status(201).body(orderMapper.toDTO(orderService.placeOrder(orderMapper.toModel(orderDTO))));
     }
 
