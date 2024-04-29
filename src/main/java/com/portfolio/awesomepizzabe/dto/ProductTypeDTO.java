@@ -17,5 +17,6 @@ public class ProductTypeDTO {
     @NotBlank(message = "Product Type name must not be empty.")
     private String name;
     private String description;
+    private long version;
 
 }

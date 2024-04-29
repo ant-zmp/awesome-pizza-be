@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.dao.ConcurrencyFailureException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -196,6 +197,22 @@ public class ProductServiceImplTest {
     public void findAllProductsEmpty() {
         Page<Product> productTypes = assertDoesNotThrow(() -> productService.findAllProducts(Pageable.unpaged()));
         assertEquals(productTypes.getTotalElements(), 0);
+    }
+
+    @Test
+    @Order(7)
+    public void productVersioningTest(){
+        Product product = new Product();
+        product = productRepository.save(product);
+
+        Product clone = new Product();
+        clone.setId(product.getId());
+        clone.setVersion(product.getVersion());
+
+        product.setDescription("edit");
+        productRepository.save(product);
+
+        assertThrows(ConcurrencyFailureException.class, () -> productRepository.save(clone));
     }
 
     private void asserter(Product beforeSave, Product saved) {

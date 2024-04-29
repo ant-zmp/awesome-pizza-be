@@ -2,6 +2,7 @@ package com.portfolio.awesomepizzabe.config;
 
 import com.portfolio.awesomepizzabe.config.exceptions.BaseException;
 import com.portfolio.awesomepizzabe.config.exceptions.ErrorDTO;
+import org.springframework.dao.ConcurrencyFailureException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -35,4 +36,11 @@ public class ExceptionInterceptor {
         return ResponseEntity.status(400)
                 .body(new ErrorDTO(e));
     }
+
+    @ExceptionHandler({ConcurrencyFailureException.class})
+    public ResponseEntity<ErrorDTO> handleConcurrencyFailureException(MethodArgumentNotValidException e) {
+        return ResponseEntity.status(400)
+                .body(new ErrorDTO(e));
+    }
+
 }

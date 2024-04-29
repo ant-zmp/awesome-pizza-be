@@ -31,5 +31,5 @@ public class ProductDTO{
     private double price;
     private boolean available = true;
     private String imageId;
-
+    private long version;
 }
