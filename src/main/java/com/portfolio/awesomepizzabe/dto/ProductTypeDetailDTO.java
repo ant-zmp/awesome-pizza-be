@@ -12,7 +12,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ProductTypeDetailDTO {
 
-    @NotBlank
     private String id;
     @NotBlank(message = "Product Type name must not be empty.")
     private String name;

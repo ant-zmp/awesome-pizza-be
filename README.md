@@ -11,3 +11,8 @@ Come team, procediamo allo sviluppo per iterazioni.
 Decidiamo che nella prima iterazione sarà disponibile un'interfaccia grafica, e verranno create delle API al fine di ordinare le pizze e aggiornarne lo stato. 
 Decidiamo di utilizzare il framework Spring e Java (versione a tua scelta). 
 Decidiamo di progettare anche i test di unità sul codice oggetto di sviluppo.
+
+### Start application:
+1. run: docker build -t awesomepizza-be .
+2. run: docker compose up -d
+3. Enjoy!

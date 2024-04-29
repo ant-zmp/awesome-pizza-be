@@ -1,6 +1,7 @@
 services:
-  mongo:
+  awesomepizza-mongo:
     image: mongo
+    container_name: awesomepizza-mongo
     hostname: localhost
     restart: always
     ports:
@@ -9,3 +10,14 @@ services:
       - MONGO_INITDB_DATABASE=admin
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=f865b53623b121fd34ee5426c792e5c33af8c227
+    volumes:
+      - ./mongodb_data:/data/db
+  awesomepizza-be:
+    image: awesomepizza-be
+    depends_on:
+      - awesomepizza-mongo
+    container_name: awesomepizza_be
+    ports:
+      - 8080:8080
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://admin:f865b53623b121fd34ee5426c792e5c33af8c227@awesomepizza-mongo/admin
