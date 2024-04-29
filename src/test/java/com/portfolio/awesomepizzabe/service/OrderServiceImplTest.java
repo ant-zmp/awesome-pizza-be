@@ -15,6 +15,7 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.ConcurrencyFailureException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
@@ -224,6 +225,23 @@ public class OrderServiceImplTest {
         assertEquals("Reason", testOrderTwo.getReason());
     }
 
+
+    @Test
+    @org.junit.jupiter.api.Order(11)
+    public void orderVersioningTest(){
+        Order order = new Order();
+
+        order = orderRepository.save(order);
+        Order clone = new Order();
+        clone.setId(order.getId());
+        clone.setVersion(order.getVersion());
+
+        order.setNotes("edit");
+        orderRepository.save(order);
+
+        assertThrows(ConcurrencyFailureException.class, () -> orderRepository.save(clone));
+
+    }
 
     private void asserter(Order expected, Order actual) {
         assertEquals(expected.getId(), actual.getId());

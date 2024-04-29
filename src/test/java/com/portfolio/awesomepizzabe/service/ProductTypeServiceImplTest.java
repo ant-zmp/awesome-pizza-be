@@ -14,6 +14,7 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.ConcurrencyFailureException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
@@ -188,6 +189,23 @@ public class ProductTypeServiceImplTest {
     public void findAllProductTypesEmpty() {
         List<ProductType> productTypes = assertDoesNotThrow(() -> productTypeRepository.findAll());
         assertEquals(productTypes.size(), 0);
+    }
+
+    @Test
+    @Order(9)
+    public void productTypeVersioningTest(){
+        ProductType productType = new ProductType();
+        productType = productTypeRepository.save(productType);
+
+        ProductType clone = new ProductType();
+        clone.setId(productType.getId());
+        clone.setVersion(productType.getVersion());
+
+        productType.setDescription("edit");
+        productTypeRepository.save(productType);
+
+        assertThrows(ConcurrencyFailureException.class, () -> productTypeRepository.save(clone));
+
     }
 
 }

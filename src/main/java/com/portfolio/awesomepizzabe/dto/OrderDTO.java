@@ -26,5 +26,6 @@ public class OrderDTO {
     private Map<String, Integer> productQuantity = new HashMap<>();
     private String notes;
     private String reason;
+    private long version;
 
 }
