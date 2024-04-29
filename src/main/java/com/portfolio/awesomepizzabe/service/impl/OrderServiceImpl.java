@@ -1,13 +1,12 @@
 package com.portfolio.awesomepizzabe.service.impl;
 
+import com.portfolio.awesomepizzabe.config.WorkhourProperties;
 import com.portfolio.awesomepizzabe.config.exceptions.AlreadyExistsException;
 import com.portfolio.awesomepizzabe.config.exceptions.status.BadRequestException;
 import com.portfolio.awesomepizzabe.config.exceptions.status.ConflictException;
 import com.portfolio.awesomepizzabe.config.exceptions.status.NotFoundException;
 import com.portfolio.awesomepizzabe.dto.OrderDetailDTO;
-import com.portfolio.awesomepizzabe.dto.ProductDTO;
 import com.portfolio.awesomepizzabe.dto.ProductDetailDTO;
-import com.portfolio.awesomepizzabe.mapper.ProductMapper;
 import com.portfolio.awesomepizzabe.model.Order;
 import com.portfolio.awesomepizzabe.model.OrderStatus;
 import com.portfolio.awesomepizzabe.model.Product;
@@ -20,7 +19,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.time.LocalTime;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.portfolio.awesomepizzabe.config.GenericConstants.ALPHA_NUMERIC_STRING;
@@ -28,14 +31,14 @@ import static com.portfolio.awesomepizzabe.config.GenericConstants.ALPHA_NUMERIC
 @Service
 public class OrderServiceImpl implements OrderService {
 
-    private final ProductMapper productMapper;
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
+    private final WorkhourProperties workhourProperties;
 
-    public OrderServiceImpl(ProductMapper productMapper, OrderRepository orderRepository, ProductRepository productRepository) {
-        this.productMapper = productMapper;
+    public OrderServiceImpl(OrderRepository orderRepository, ProductRepository productRepository, WorkhourProperties workhourProperties) {
         this.orderRepository = orderRepository;
         this.productRepository = productRepository;
+        this.workhourProperties = workhourProperties;
     }
 
     /**
@@ -50,7 +53,6 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public Order placeOrder(Order requestOrder) {
-
         Set<String> productIds = requestOrder.getProductQuantity().keySet();
         Map<String, Product> products = productRepository.findAllByIdInAndAvailableTrue(productIds)
                 .stream().collect(Collectors.toMap(Product::getId, product -> product));
@@ -185,12 +187,13 @@ public class OrderServiceImpl implements OrderService {
      * The order is found from the database. If there is no order associated to the given id, throws a NotFoundException.
      * If the status of the order is COMPLETED or CANCELLED, the method throws a ConflictException.
      * The method returns the order after it has been cancelled.
+     *
      * @param id
      * @param reason
-     * @throws BadRequestException - the reason is null;
-     * @throws NotFoundException - there is no Order for the given id;
-     * @throws AlreadyExistsException - the status is already COMPLETED or CANCELLED
      * @return the order after it has been edited
+     * @throws BadRequestException    - the reason is null;
+     * @throws NotFoundException      - there is no Order for the given id;
+     * @throws AlreadyExistsException - the status is already COMPLETED or CANCELLED
      */
     @Override
     public Order denyOrder(String id, String reason) {
@@ -217,8 +220,8 @@ public class OrderServiceImpl implements OrderService {
      * the findNextOrder method returns the next order that needs to be evaded. The order can be either PLACED or IN_PROGRESS.
      * If there are no orders that need to be evaded, the method throws a NotFoundException.
      *
-     * @throws NotFoundException if there are no orders that need to be evaded
      * @return the next Order
+     * @throws NotFoundException if there are no orders that need to be evaded
      */
     @Override
     public Order findNextOrder() {
@@ -263,8 +266,21 @@ public class OrderServiceImpl implements OrderService {
             }
             result = stringBuilder.toString();
 
-        } while(orderRepository.existsByOrderCodeAndOrderDateBetween(result, LocalDate.now().atStartOfDay(), LocalDate.now().plusDays(1).atStartOfDay()));
+        } while (orderRepository.existsByOrderCodeAndOrderDateBetween(result, LocalDate.now().atStartOfDay(), LocalDate.now().plusDays(1).atStartOfDay()));
 
         return result;
+    }
+
+    /**
+     * The checkWorkhours method checks if it is possible to place an order. If not, the method throws a BadRequestException;
+     *
+     * @throws BadRequestException if the order is placed before or after the specified work hours.
+     */
+    @Override
+    public void checkWorkHours() {
+        LocalTime now = LocalTime.now();
+        if (now.isBefore(LocalTime.parse(workhourProperties.getStart())) || now.isAfter(LocalTime.parse(workhourProperties.getEnd()))) {
+            throw new BadRequestException(workhourProperties.getReasonMessage());
+        }
     }
 }

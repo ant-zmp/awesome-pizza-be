@@ -13,4 +13,5 @@ public interface OrderRepository extends MongoRepository<Order, String> {
     Optional<Order> findByOrderCodeAndOrderDateBetween(String orderCode, LocalDateTime start, LocalDateTime end);
     Optional<Order> findFirstByStatusInOrderByOrderDateAsc(List<OrderStatus> statuses);
     int countByOrderDateBeforeAndStatusIn(LocalDateTime orderDate, List<OrderStatus> statuses);
+    List<Order> findAllByStatusIn(List<OrderStatus> statuses);
 }
