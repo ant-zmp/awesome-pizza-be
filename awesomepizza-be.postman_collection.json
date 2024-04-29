@@ -1,0 +1,597 @@
+{
+	"info": {
+		"_postman_id": "0990bb7c-6c92-41cc-bc2e-8e70c4ba478e",
+		"name": "awesomepizza-be",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28025356",
+		"_collection_link": "https://lively-meteor-158395.postman.co/workspace/New-Team-Workspace~8cbca694-95f8-4e87-ae69-f3d1f13e5f1a/collection/28025356-0990bb7c-6c92-41cc-bc2e-8e70c4ba478e?action=share&source=collection_link&creator=28025356"
+	},
+	"item": [
+		{
+			"name": "customer",
+			"item": [
+				{
+					"name": "Find Detailed Product Types",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/customer/product-types",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customer",
+								"product-types"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find Available Products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/customer/products",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customer",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find Available Products by Type Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/customer/products/662ad527be9124221c8457a2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customer",
+								"products",
+								"662ad527be9124221c8457a2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Place Order",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"productQuantity\":{\n        \"662f586c6ba3ae6db3954926\":1,\n        \"662ae3f20e78f31bdd4f4b9a\":2\n    },\n    \"notes\":\"Extra cheese please!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/customer",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check Order Status by Order Code",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/customer/order/5G7-PSC",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customer",
+								"order",
+								"5G7-PSC"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Confirm Delivery",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/customer/order/662f689e9b84ce397e3fe73a/confirm-delivery",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customer",
+								"order",
+								"662f689e9b84ce397e3fe73a",
+								"confirm-delivery"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "product",
+			"item": [
+				{
+					"name": "Get All Products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/admin/product",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"product"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Product",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"Margherita\",\n    \"description\":\"Nobody does it better.\",\n    \"ingredients\":[\"Flour\",\"Water\",\"Yiest\",\"Salt\",\"Tomato\",\"Fiordilatte\",\"Basil\",\"Extra Virgin Olive Oil\"],\n    \"available\":true,\n    \"productType\":{\n            \"id\": \"662ad4e9be9124221c8457a1\",\n            \"name\": \"Pizza\",\n            \"description\": \"Probably the main reason why you're here...\"\n        },\n    \"price\":5.00,\n    \"imageId\":\"662ae2640e78f31bdd4f4b8f\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/admin/product",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"product"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Product",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"Carrettiera\",\n    \"description\":\"This one is pretty popular in Naples!\",\n    \"ingredients\":[\"Flour\",\"Water\",\"Yiest\",\"Salt\",\"Italian Sausage\",\"Fiordilatte\",\"Fried broccoli (kinda)\",\"Extra Virgin Olive Oil\"],\n    \"available\":true,\n    \"productType\":{\n            \"id\": \"662ad4e9be9124221c8457a1\",\n            \"name\": \"Pizza\",\n            \"description\": \"Probably the main reason why you're here...\"\n        },\n    \"price\":5.00,\n    \"imageId\":\"662ae4010e78f31bdd4f4b9b\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/admin/product/662ae3f20e78f31bdd4f4b9a",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"product",
+								"662ae3f20e78f31bdd4f4b9a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Product",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"Carrettiera\",\n    \"description\":\"This one is pretty popular in Naples!\",\n    \"ingredients\":[\"Flour\",\"Water\",\"Yiest\",\"Salt\",\"Italian Sausage\",\"Fiordilatte\",\"Fried broccoli (kinda)\",\"Extra Virgin Olive Oil\"],\n    \"available\":true,\n    \"productType\":{\n            \"id\": \"662ad4e9be9124221c8457a1\",\n            \"name\": \"Pizza\",\n            \"description\": \"Probably the main reason why you're here...\"\n        },\n    \"price\":5.00,\n    \"imageId\":\"662ae4010e78f31bdd4f4b9b\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/admin/product/662ae3f20e78f31bdd4f4b9a",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"product",
+								"662ae3f20e78f31bdd4f4b9a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Product",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/admin/product/662ae47c0e78f31bdd4f4b9f",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"product",
+								"662ae47c0e78f31bdd4f4b9f"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "product-type",
+			"item": [
+				{
+					"name": "Create Product Type",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"Pizza\",\n    \"description\": \"Probably the main reason why you're here...\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/admin/product-type",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"product-type"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Product Type",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"Special pizza\",\n    \"description\":\"Probably the reason why you're here...\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/admin/product-type/662ad40bbe9124221c8457a0",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"product-type",
+								"662ad40bbe9124221c8457a0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Product Type by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/admin/product-type/662ad40bbe9124221c8457a0",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"product-type",
+								"662ad40bbe9124221c8457a0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Product Types",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/admin/product-type",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"product-type"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Product Type",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/admin/product-type/662ad527be9124221c8457a2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"product-type",
+								"662ad527be9124221c8457a2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "image",
+			"item": [
+				{
+					"name": "Upload file",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/image",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"image"
+							],
+							"query": [
+								{
+									"key": "file",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Download file",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/image/662adf7bbe9124221c8457a3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"image",
+								"662adf7bbe9124221c8457a3"
+							],
+							"query": [
+								{
+									"key": "file",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "order",
+			"item": [
+				{
+					"name": "Find Next Order",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/admin/order/find-next",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"order",
+								"find-next"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find Order by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/admin/order/662f68aa9b84ce397e3fe73b",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"order",
+								"662f68aa9b84ce397e3fe73b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find All Orders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/admin/order",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change Order Status",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/admin/order/662f5ab36ba3ae6db3954929/change-status",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"order",
+								"662f5ab36ba3ae6db3954929",
+								"change-status"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deny order",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/admin/order/662f5ab36ba3ae6db3954929/deny?reason=Not possible to evade order",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"order",
+								"662f5ab36ba3ae6db3954929",
+								"deny"
+							],
+							"query": [
+								{
+									"key": "reason",
+									"value": "Not possible to evade order"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

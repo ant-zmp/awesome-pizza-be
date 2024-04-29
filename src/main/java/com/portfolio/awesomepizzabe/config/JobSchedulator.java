@@ -9,14 +9,18 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class TempRemover {
+public class JobSchedulator {
 
     private final GridFsTemplate gridFsTemplate;
 
-    public TempRemover(GridFsTemplate gridFsTemplate) {
+    public JobSchedulator(GridFsTemplate gridFsTemplate) {
         this.gridFsTemplate = gridFsTemplate;
     }
 
+    /**
+     * The removeTemp method represents a scheduled job. Every 15 minutes starting from 00, all images that are not associated to any product are deleted.
+     * The method searches for all the file with field 'temp' set to true and deletes them.
+     */
     @Scheduled(cron = "0 */15 * * * ?")
     public void removeTemp() {
         log.info("Temporary file cleanup...");

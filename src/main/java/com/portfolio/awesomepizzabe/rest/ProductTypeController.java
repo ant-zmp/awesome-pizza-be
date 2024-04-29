@@ -4,8 +4,6 @@ import com.portfolio.awesomepizzabe.config.exceptions.AlreadyExistsException;
 import com.portfolio.awesomepizzabe.config.exceptions.AssociatedEntityException;
 import com.portfolio.awesomepizzabe.config.exceptions.status.NotFoundException;
 import com.portfolio.awesomepizzabe.dto.ProductTypeDTO;
-import com.portfolio.awesomepizzabe.dto.ProductTypeInputDTO;
-import com.portfolio.awesomepizzabe.mapper.ProductTypeInputMapper;
 import com.portfolio.awesomepizzabe.mapper.ProductTypeMapper;
 import com.portfolio.awesomepizzabe.service.ProductTypeService;
 import jakarta.validation.Valid;
@@ -24,12 +22,10 @@ public class ProductTypeController {
 
     private final ProductTypeMapper productTypeMapper;
     private final ProductTypeService productTypeService;
-    private final ProductTypeInputMapper productTypeInputMapper;
 
-    public ProductTypeController(ProductTypeMapper productTypeMapper, ProductTypeService productTypeService, ProductTypeInputMapper productTypeInputMapper) {
+    public ProductTypeController(ProductTypeMapper productTypeMapper, ProductTypeService productTypeService) {
         this.productTypeMapper = productTypeMapper;
         this.productTypeService = productTypeService;
-        this.productTypeInputMapper = productTypeInputMapper;
     }
 
 
@@ -43,8 +39,8 @@ public class ProductTypeController {
      * @throws AlreadyExistsException          if the name has already been taken (409 CONFLICT)
      */
     @PostMapping
-    public ResponseEntity<ProductTypeDTO> saveProductType(@RequestBody @Valid ProductTypeInputDTO dto) {
-        return ResponseEntity.status(201).body(productTypeMapper.toDTO(productTypeService.createProductType(productTypeInputMapper.toModel(dto))));
+    public ResponseEntity<ProductTypeDTO> saveProductType(@RequestBody @Valid ProductTypeDTO dto) {
+        return ResponseEntity.status(201).body(productTypeMapper.toDTO(productTypeService.createProductType(productTypeMapper.toModel(dto))));
     }
 
     /**
@@ -60,8 +56,8 @@ public class ProductTypeController {
      * @throws AlreadyExistsException          if the name has already been taken (409 CONFLICT)
      */
     @PutMapping("/{id}")
-    public ResponseEntity<ProductTypeDTO> updateProductType(@PathVariable String id, @RequestBody @Valid ProductTypeInputDTO dto) {
-        return ResponseEntity.ok(productTypeMapper.toDTO(productTypeService.updateProductType(id, productTypeInputMapper.toModel(dto))));
+    public ResponseEntity<ProductTypeDTO> updateProductType(@PathVariable String id, @RequestBody @Valid ProductTypeDTO dto) {
+        return ResponseEntity.ok(productTypeMapper.toDTO(productTypeService.updateProductType(id, productTypeMapper.toModel(dto))));
     }
 
     /**

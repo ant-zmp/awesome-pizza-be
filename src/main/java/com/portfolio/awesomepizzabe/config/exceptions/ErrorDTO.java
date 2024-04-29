@@ -15,7 +15,7 @@ public class ErrorDTO {
         if (exception instanceof BaseException || exception instanceof MethodArgumentNotValidException) {
             log.warn(this.message);
         } else {
-            log.error(exception.getStackTrace().toString());
+            log.error(this.getMessage() + " : " + exception.getCause());
         }
     }
 

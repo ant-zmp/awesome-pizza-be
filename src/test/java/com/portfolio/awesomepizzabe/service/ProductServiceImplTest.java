@@ -2,8 +2,8 @@ package com.portfolio.awesomepizzabe.service;
 
 import com.portfolio.awesomepizzabe.AwesomePizzaBeApplication;
 import com.portfolio.awesomepizzabe.config.exceptions.AlreadyExistsException;
-import com.portfolio.awesomepizzabe.config.exceptions.status.ConflictException;
 import com.portfolio.awesomepizzabe.config.exceptions.status.BadRequestException;
+import com.portfolio.awesomepizzabe.config.exceptions.status.ConflictException;
 import com.portfolio.awesomepizzabe.config.exceptions.status.NotFoundException;
 import com.portfolio.awesomepizzabe.model.Product;
 import com.portfolio.awesomepizzabe.model.ProductType;
@@ -68,10 +68,10 @@ public class ProductServiceImplTest {
         );
 
         Resource resource = resourceLoader.getResource("classpath:pizza_margherita.jpg");
-        fileIdOne = gridFsTemplate.store(resource.getInputStream(),resource.getFilename(),"image/jpeg", Map.of("temp",true)).toString();
+        fileIdOne = gridFsTemplate.store(resource.getInputStream(), resource.getFilename(), "image/jpeg", Map.of("temp", true)).toString();
 
         resource = resourceLoader.getResource("classpath:pizza_carrettiera.jpg");
-        fileIdTwo = gridFsTemplate.store(resource.getInputStream(),resource.getFilename(), "image/jpeg", Map.of("temp",true)).toString();
+        fileIdTwo = gridFsTemplate.store(resource.getInputStream(), resource.getFilename(), "image/jpeg", Map.of("temp", true)).toString();
 
         testSubjectFirst = new Product();
         testSubjectFirst.setName("Margherita");
@@ -79,12 +79,12 @@ public class ProductServiceImplTest {
         testSubjectFirst.setProductType(testProductType);
         testSubjectFirst.setPrice(3.50);
         testSubjectFirst.setAvailable(true);
-        testSubjectFirst.setIngredients(List.of("Pomodoro","Fiordilatte","Basilico","Olio EVO"));
+        testSubjectFirst.setIngredients(List.of("Pomodoro", "Fiordilatte", "Basilico", "Olio EVO"));
         testSubjectFirst.setImageId(fileIdOne);
 
         testSubjectSecond = new Product();
         testSubjectSecond.setPrice(0);
-        testSubjectSecond.setProductType(new ProductType("id_does_not_exist","",""));
+        testSubjectSecond.setProductType(new ProductType(null, "", ""));
         testSubjectSecond.setName("Margherita");
         testSubjectSecond.setImageId("id_does_not_exist");
     }
@@ -104,10 +104,12 @@ public class ProductServiceImplTest {
         Product saved = assertDoesNotThrow(() -> productService.createProduct(testSubjectFirst));
 
         assertNotNull(saved.getId());
-        asserter(testSubjectFirst,saved);
+        asserter(testSubjectFirst, saved);
 
         assertThrows(BadRequestException.class, () -> productService.createProduct(testSubjectSecond));
         testSubjectSecond.setPrice(5.0);
+        assertThrows(BadRequestException.class, () -> productService.createProduct(testSubjectSecond));
+        testSubjectSecond.setProductType(new ProductType("id_does_not_exist", "", ""));
         assertThrows(ConflictException.class, () -> productService.createProduct(testSubjectSecond));
         testSubjectSecond.setName("Salsiccia e Friarielli");
         assertThrows(NotFoundException.class, () -> productService.createProduct(testSubjectSecond));
@@ -126,7 +128,7 @@ public class ProductServiceImplTest {
         Product fetched = assertDoesNotThrow(() -> productService.findProduct(testSubjectFirst.getId()));
 
         assertEquals(testSubjectFirst.getId(), fetched.getId());
-        asserter(testSubjectFirst,fetched);
+        asserter(testSubjectFirst, fetched);
     }
 
     @Test
@@ -135,14 +137,17 @@ public class ProductServiceImplTest {
         Product testSubjectUpdate = new Product();
         testSubjectUpdate.setName("Margherita");
         testSubjectUpdate.setDescription("Pizza Carrettiera");
-        testSubjectUpdate.setProductType(new ProductType("id_does_not_exist","",""));
+        testSubjectUpdate.setProductType(new ProductType(null, "", ""));
         testSubjectUpdate.setImageId(fileIdTwo);
-        testSubjectUpdate.setIngredients(List.of("Salsiccia","Fior di latte","Friarielli"));
+        testSubjectUpdate.setIngredients(List.of("Salsiccia", "Fior di latte", "Friarielli"));
 
         testSubjectUpdate.setPrice(-4);
         assertThrows(BadRequestException.class, () -> productService.updateProduct(testSubjectSecond.getId(), testSubjectUpdate));
 
         testSubjectUpdate.setPrice(6.20);
+        assertThrows(BadRequestException.class, () -> productService.updateProduct(testSubjectSecond.getId(), testSubjectUpdate));
+
+        testSubjectUpdate.setProductType(new ProductType("id_does_not_exist", "", ""));
         assertThrows(NotFoundException.class, () -> productService.updateProduct("random id", testSubjectUpdate));
 
         assertThrows(AlreadyExistsException.class, () -> productService.updateProduct(testSubjectSecond.getId(), testSubjectUpdate));
@@ -151,7 +156,7 @@ public class ProductServiceImplTest {
         assertThrows(NotFoundException.class, () -> productService.updateProduct(testSubjectSecond.getId(), testSubjectUpdate));
         testSubjectUpdate.setProductType(testProductType);
 
-        testSubjectSecond = assertDoesNotThrow(()-> productService.updateProduct(testSubjectSecond.getId(), testSubjectUpdate));
+        testSubjectSecond = assertDoesNotThrow(() -> productService.updateProduct(testSubjectSecond.getId(), testSubjectUpdate));
 
         testSubjectUpdate.setName("Carrettiera");
         testSubjectUpdate.setAvailable(false);
@@ -170,12 +175,12 @@ public class ProductServiceImplTest {
         products = assertDoesNotThrow(() -> productService.findAllAvailableProducts(Pageable.unpaged()));
         assertEquals(products.getTotalElements(), 1);
 
-        asserter(testSubjectFirst,products.getContent().get(0));
+        asserter(testSubjectFirst, products.getContent().get(0));
 
-        products = assertDoesNotThrow(() -> productService.findAllAvailableProductsByType(testProductType.getId(),Pageable.unpaged()));
+        products = assertDoesNotThrow(() -> productService.findAllAvailableProductsByType(testProductType.getId(), Pageable.unpaged()));
         assertEquals(products.getTotalElements(), 1);
 
-        asserter(testSubjectFirst,products.getContent().get(0));
+        asserter(testSubjectFirst, products.getContent().get(0));
     }
 
     @Test
