@@ -16,7 +16,9 @@ Decidiamo di progettare anche i test di unità sul codice oggetto di sviluppo.
 ___
 ### How to start the application:
 From the project folder, run the following commands: 
+   - docker image rm awesomepizza-be [DO THIS ONLY IF THE IMAGE WAS ALREADY PRESENT]
    - docker build -t awesomepizza-be .
    - docker compose up -d
+
 
     CAUTION: the first command requires the final point in order to work!
