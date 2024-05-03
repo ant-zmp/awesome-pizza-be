@@ -126,6 +126,7 @@ public class OrderServiceImpl implements OrderService {
         orderDetailDTO.setNotes(onDb.getNotes());
         orderDetailDTO.setStatus(onDb.getStatus());
         orderDetailDTO.setReason(onDb.getReason());
+        orderDetailDTO.setAddress(onDb.getAddress());
         orderDetailDTO.setProductQuantity(productQuantities);
         orderDetailDTO.setInLineBefore(orderRepository.countByOrderDateBeforeAndStatusIn(onDb.getOrderDate(), List.of(OrderStatus.PLACED, OrderStatus.IN_PROGRESS)));
         return orderDetailDTO;
@@ -247,6 +248,7 @@ public class OrderServiceImpl implements OrderService {
         orderDetailDTO.setNotes(onDb.getNotes());
         orderDetailDTO.setStatus(onDb.getStatus());
         orderDetailDTO.setReason(onDb.getReason());
+        orderDetailDTO.setAddress(onDb.getAddress());
         orderDetailDTO.setProductQuantity(productQuantities);
         orderDetailDTO.setInLineBefore(orderRepository.countByOrderDateBeforeAndStatusIn(onDb.getOrderDate(), List.of(OrderStatus.PLACED, OrderStatus.IN_PROGRESS)));
         return orderDetailDTO;

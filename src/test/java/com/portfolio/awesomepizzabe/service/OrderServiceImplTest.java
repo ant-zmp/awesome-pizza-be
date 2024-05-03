@@ -156,6 +156,7 @@ public class OrderServiceImplTest {
         assertEquals(testOrderOne.getProductQuantity().size(), fetched.getProductQuantity().size());
         assertEquals(testOrderOne.getNotes(), fetched.getNotes());
         assertEquals(testOrderOne.getReason(), fetched.getReason());
+        assertEquals(testOrderOne.getAddress(), fetched.getAddress());
     }
 
     @Test
@@ -172,6 +173,7 @@ public class OrderServiceImplTest {
         assertEquals(testOrderOne.getProductQuantity().size(), detail.getProductQuantity().size());
         assertEquals(testOrderOne.getNotes(), detail.getNotes());
         assertEquals(testOrderOne.getReason(), detail.getReason());
+        assertEquals(testOrderOne.getAddress(), detail.getAddress());
         assertEquals(0, detail.getInLineBefore());
 
         detail = assertDoesNotThrow(() -> orderService.checkOrderStatus(testOrderTwo.getOrderCode()));
@@ -204,6 +206,7 @@ public class OrderServiceImplTest {
         assertEquals(testOrderTwo.getProductQuantity().size(), fetched.getProductQuantity().size());
         assertEquals(testOrderTwo.getNotes(), fetched.getNotes());
         assertEquals(testOrderTwo.getReason(), fetched.getReason());
+        assertEquals(testOrderTwo.getAddress(), fetched.getAddress());
 
         testOrderTwo = assertDoesNotThrow(() -> orderService.changeOrderStatus(testOrderTwo.getId()));
         testOrderTwo = assertDoesNotThrow(() -> orderService.changeOrderStatus(testOrderTwo.getId()));
