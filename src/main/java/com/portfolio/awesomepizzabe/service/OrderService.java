@@ -18,7 +18,7 @@ public interface OrderService {
 
     Order denyOrder(String id, String reason);
 
-    Order findNextOrder();
+    OrderDetailDTO findNextOrder();
 
     Page<Order> findAllOrders(Pageable pageable);
 

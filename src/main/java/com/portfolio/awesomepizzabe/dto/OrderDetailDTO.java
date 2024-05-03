@@ -25,6 +25,7 @@ public class OrderDetailDTO implements Serializable {
     private Set<ProductDetailDTO> productQuantity = new HashSet<>();
     private String notes;
     private String reason;
+    private String address;
     private int inLineBefore;
 
 }

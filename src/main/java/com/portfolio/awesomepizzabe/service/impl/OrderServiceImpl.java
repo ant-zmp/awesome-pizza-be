@@ -75,6 +75,7 @@ public class OrderServiceImpl implements OrderService {
         order.setTotalPrice(totalPrice);
         order.setOrderCode(generateOrderCode());
         order.setNotes(requestOrder.getNotes());
+        order.setAddress(requestOrder.getAddress());
 
         return orderRepository.save(order);
     }
@@ -220,13 +221,35 @@ public class OrderServiceImpl implements OrderService {
      * the findNextOrder method returns the next order that needs to be evaded. The order can be either PLACED or IN_PROGRESS.
      * If there are no orders that need to be evaded, the method throws a NotFoundException.
      *
-     * @return the next Order
+     * @return the next Order with its details
      * @throws NotFoundException if there are no orders that need to be evaded
      */
     @Override
-    public Order findNextOrder() {
-        return orderRepository.findFirstByStatusInOrderByOrderDateAsc(List.of(OrderStatus.PLACED, OrderStatus.IN_PROGRESS))
+    public OrderDetailDTO findNextOrder() {
+
+        Order onDb = orderRepository.findFirstByStatusInOrderByOrderDateAsc(List.of(OrderStatus.PLACED, OrderStatus.IN_PROGRESS))
                 .orElseThrow(() -> new NotFoundException("There are no orders to evade!"));
+
+        Set<ProductDetailDTO> productQuantities = new HashSet<>();
+
+        Map<String, Product> productMap = productRepository.findAllByIdInAndAvailableTrue(onDb.getProductQuantity().keySet())
+                .stream().collect(Collectors.toMap(Product::getId, product -> product));
+
+        onDb.getProductQuantity().keySet()
+                .forEach(id -> productQuantities.add(new ProductDetailDTO(productMap.get(id), onDb.getProductQuantity().get((id))))
+                );
+
+        OrderDetailDTO orderDetailDTO = new OrderDetailDTO();
+        orderDetailDTO.setId(onDb.getId());
+        orderDetailDTO.setOrderCode(onDb.getOrderCode());
+        orderDetailDTO.setOrderDate(onDb.getOrderDate());
+        orderDetailDTO.setTotalPrice(onDb.getTotalPrice());
+        orderDetailDTO.setNotes(onDb.getNotes());
+        orderDetailDTO.setStatus(onDb.getStatus());
+        orderDetailDTO.setReason(onDb.getReason());
+        orderDetailDTO.setProductQuantity(productQuantities);
+        orderDetailDTO.setInLineBefore(orderRepository.countByOrderDateBeforeAndStatusIn(onDb.getOrderDate(), List.of(OrderStatus.PLACED, OrderStatus.IN_PROGRESS)));
+        return orderDetailDTO;
     }
 
     /**

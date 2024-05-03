@@ -28,6 +28,7 @@ public class Order {
     private Map<String, Integer> productQuantity = new HashMap<>();
     private String notes;
     private String reason;
+    private String address;
 
     @Version
     private long version;

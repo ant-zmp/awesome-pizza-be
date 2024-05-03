@@ -4,6 +4,7 @@ import com.portfolio.awesomepizzabe.config.exceptions.status.BadRequestException
 import com.portfolio.awesomepizzabe.config.exceptions.status.ConflictException;
 import com.portfolio.awesomepizzabe.config.exceptions.status.NotFoundException;
 import com.portfolio.awesomepizzabe.dto.OrderDTO;
+import com.portfolio.awesomepizzabe.dto.OrderDetailDTO;
 import com.portfolio.awesomepizzabe.mapper.OrderMapper;
 import com.portfolio.awesomepizzabe.service.OrderService;
 import org.springframework.data.domain.Page;
@@ -82,8 +83,8 @@ public class OrderController {
      * @return the next Order (200 OK)
      */
     @GetMapping("/find-next")
-    public ResponseEntity<OrderDTO> findNextOrder() {
-        return ResponseEntity.ok(orderMapper.toDTO(orderService.findNextOrder()));
+    public ResponseEntity<OrderDetailDTO> findNextOrder() {
+        return ResponseEntity.ok(orderService.findNextOrder());
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.portfolio.awesomepizzabe.dto;
 
 import com.portfolio.awesomepizzabe.model.OrderStatus;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,6 +27,8 @@ public class OrderDTO {
     private Map<String, Integer> productQuantity = new HashMap<>();
     private String notes;
     private String reason;
+    @NotBlank
+    private String address;
     private long version;
 
 }

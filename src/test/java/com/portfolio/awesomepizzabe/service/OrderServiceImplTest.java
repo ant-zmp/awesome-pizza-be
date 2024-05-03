@@ -147,8 +147,15 @@ public class OrderServiceImplTest {
     @Test
     @org.junit.jupiter.api.Order(4)
     public void findNextOrderOneTest() {
-        Order fetched = assertDoesNotThrow(() -> orderService.findNextOrder());
-        asserter(testOrderOne,fetched);
+        OrderDetailDTO fetched = assertDoesNotThrow(() -> orderService.findNextOrder());
+        assertEquals(testOrderOne.getId(), fetched.getId());
+        assertEquals(testOrderOne.getOrderCode(), fetched.getOrderCode());
+        assertTrue(testOrderOne.getOrderDate().truncatedTo(ChronoUnit.MILLIS).isEqual(fetched.getOrderDate().truncatedTo(ChronoUnit.MILLIS)));
+        assertEquals(testOrderOne.getStatus(), fetched.getStatus());
+        assertEquals(testOrderOne.getTotalPrice(), fetched.getTotalPrice());
+        assertEquals(testOrderOne.getProductQuantity().size(), fetched.getProductQuantity().size());
+        assertEquals(testOrderOne.getNotes(), fetched.getNotes());
+        assertEquals(testOrderOne.getReason(), fetched.getReason());
     }
 
     @Test
@@ -187,8 +194,16 @@ public class OrderServiceImplTest {
     @Test
     @org.junit.jupiter.api.Order(7)
     public void findNextOrderTwoTest() {
-        Order fetched = assertDoesNotThrow(() -> orderService.findNextOrder());
-        asserter(testOrderTwo,fetched);
+        OrderDetailDTO fetched = assertDoesNotThrow(() -> orderService.findNextOrder());
+
+        assertEquals(testOrderTwo.getId(), fetched.getId());
+        assertEquals(testOrderTwo.getOrderCode(), fetched.getOrderCode());
+        assertTrue(testOrderTwo.getOrderDate().truncatedTo(ChronoUnit.MILLIS).isEqual(fetched.getOrderDate().truncatedTo(ChronoUnit.MILLIS)));
+        assertEquals(testOrderTwo.getStatus(), fetched.getStatus());
+        assertEquals(testOrderTwo.getTotalPrice(), fetched.getTotalPrice());
+        assertEquals(testOrderTwo.getProductQuantity().size(), fetched.getProductQuantity().size());
+        assertEquals(testOrderTwo.getNotes(), fetched.getNotes());
+        assertEquals(testOrderTwo.getReason(), fetched.getReason());
 
         testOrderTwo = assertDoesNotThrow(() -> orderService.changeOrderStatus(testOrderTwo.getId()));
         testOrderTwo = assertDoesNotThrow(() -> orderService.changeOrderStatus(testOrderTwo.getId()));
